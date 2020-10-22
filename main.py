@@ -9,23 +9,28 @@ dp = Dispatcher(bot)
 @dp.message_handler(filters.Regexp(regexp="Бердник"))
 @dp.message_handler(filters.Regexp(regexp="Букасов"))
 async def lapochka_handler(message: types.Message):
-    await message.reply("Лапочка❤️❤️❤️!!!")
+    await message.reply("Лапуня❤️❤️❤️!!!")
 
 
 @dp.message_handler(filters.Regexp(regexp="Женя!"))
 @dp.message_handler(filters.Regexp(regexp="Староста!"))
 async def headman_handler(message: types.Message):
-    await message.reply("@nullelon иди сюда, котёночек ты наш любимый 😻😻😻")
+    await message.reply("@nullelon іди сюди, кошаче 😻")
 
 
 @dp.message_handler(filters.Regexp(regexp="Ася!"))
 async def asya_handler(message: types.Message):
-    await message.reply("@agent_sever иди сюда, наша ты кошечка!!! 😻😻😻")
+    await message.reply("@agent_sever іди сюда, наша ти киця любима!!! 😻😻😻")
 
 
 @dp.message_handler(filters.Regexp(regexp="электричк"))
 async def electrichka_handler(message: types.Message):
     await message.reply_sticker(sticker="CAACAgIAAxkBAAEGO-hfdE0ZBsw8zvUNKI2lxKA6mHqNkwACBQADqxJqFVBIhP7h96FeGwQ")
+
+
+@dp.message_handler(filters.Regexp(regexp="пойду поем"))
+async def smachnogo_handler(message: types.Message):
+    await message.reply("Смачного ❤️❤️❤️!")
 
 
 @dp.message_handler(commands='schedule')
