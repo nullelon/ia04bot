@@ -20,7 +20,7 @@ async def headman_handler(message: types.Message):
 
 @dp.message_handler(filters.Regexp(regexp="Ася!"))
 async def asya_handler(message: types.Message):
-    await message.reply("@agent_sever іди сюда, наша ти киця любима!!! 😻😻😻")
+    await message.reply("@agent_sever іди сюди, наша ти киця олюблена!!! 😻😻😻")
 
 
 @dp.message_handler(filters.Regexp(regexp="электричк"))
