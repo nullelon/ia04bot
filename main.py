@@ -2,8 +2,12 @@ from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher, filters
 from aiogram.utils import executor
 from datetime import datetime
+import configparser
 
-bot = Bot(token='token', parse_mode=types.ParseMode.HTML)
+config = configparser.ConfigParser()
+config.read("settings.ini")
+
+bot = Bot(token=config['Bot']['token'], parse_mode=types.ParseMode.HTML)
 dp = Dispatcher(bot)
 
 
@@ -36,17 +40,17 @@ async def smachnogo_handler(message: types.Message):
 
 @dp.message_handler(commands='schedule')
 async def schedule(message: types.Message):
-    await message.reply(text=scheduleText())
+    await message.reply(text=schedule_text())
 
 
-def scheduleText():
+def schedule_text():
     time = datetime.now()
     seconds = time.hour * 60 * 60 + time.minute * 60
-    text = f'1 пара  08-30 - 10-05{" <-" if 30600 <= seconds <= 37500 else ""}\n' \
-           f'2 пара  10-25 - 12-00{" <-" if 37500 <= seconds <= 44400 else ""}\n' \
-           f'3 пара  12-20 - 13-55{" <-" if 44400 <= seconds <= 51300 else ""}\n' \
-           f'4 пара  14-15 - 15-50{" <-" if 51300 <= seconds <= 58200 else ""}\n' \
-           f'5 пара  16-10 - 17-45{" <-" if 58200 <= seconds <= 63900 else ""}'
+    text = f'1 пара  08-30 - 10-05{" &lt=" if 30600 <= seconds <= 37500 else ""}\n' \
+           f'2 пара  10-25 - 12-00{" &lt=" if 37500 <= seconds <= 44400 else ""}\n' \
+           f'3 пара  12-20 - 13-55{" &lt=" if 44400 <= seconds <= 51300 else ""}\n' \
+           f'4 пара  14-15 - 15-50{" &lt=" if 51300 <= seconds <= 58200 else ""}\n' \
+           f'5 пара  16-10 - 17-45{" &lt=" if 58200 <= seconds <= 63900 else ""}'
     return text
 
 
