@@ -26,10 +26,8 @@ async def zoom(message: types.Message):
 
         text = re.sub(r'\n+</a>', '</a>\n', text)
 
-        print(text)
-
         for line in text.splitlines():
-            if fields[1] in line:
+            if fields[1].lower() in line.lower():
                 final_line = line
 
         await msg.delete()
