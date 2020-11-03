@@ -1,3 +1,4 @@
+import re
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher, filters
 from aiogram.utils import executor
@@ -13,7 +14,29 @@ dp = Dispatcher(bot)
 
 @dp.message_handler(commands='zoom')
 async def zoom(message: types.Message):
-    await bot.forward_message(message.chat.id, from_chat_id=-1001409457067, message_id=11)
+    fields = message.text.split()
+    if len(fields) == 1:
+        await bot.forward_message(message.chat.id, from_chat_id=-1001409457067, message_id=11)
+    else:
+        msg = await bot.forward_message(545484163, from_chat_id=-1001409457067, message_id=11)
+
+        final_line = ''
+
+        text = msg.html_text
+
+        text = re.sub(r'\n+</a>', '</a>\n', text)
+
+        print(text)
+
+        for line in text.splitlines():
+            if fields[1] in line:
+                final_line = line
+
+        await msg.delete()
+        if final_line != '':
+            await message.reply(final_line, parse_mode='HTML', disable_web_page_preview=True)
+        else:
+            await message.reply('Ничего не нашел...')
 
 
 @dp.message_handler(commands='schedule')
