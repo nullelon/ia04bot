@@ -39,15 +39,19 @@ async def zoom(message: types.Message):
             await message.reply('Ничего не нашел...')
 
 
-@dp.message_handler(commands='rand_proga')
-async def zoom(message: types.Message):
-    l = list(range(1, 11))
-    random.shuffle(l)
-    text = 'Бог рандома выбрал для проги след. бригады:\n'
-    i = 0
-    for number in l:
-        i += 1
-        text += f'{i}) Бригада {number}\n'
+@dp.message_handler(commands='rand')
+async def random_list(message: types.Message):
+    fields = message.text.split()
+    text = 'Бог рандома выбрал следующие бригады:\n'
+    if fields[1].isnumeric() and 0 < int(fields[1]) < 32:
+        l = list(range(1, int(fields[1])))
+        random.shuffle(l)
+        i = 0
+        for number in l:
+            i += 1
+            text += f'{i}) Бригада {number}\n'
+    else:
+        text = "ты дибил да"
 
     await message.reply(text)
 
