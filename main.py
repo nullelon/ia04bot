@@ -1,4 +1,6 @@
 import re
+import random
+
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher, filters
 from aiogram.utils import executor
@@ -35,6 +37,19 @@ async def zoom(message: types.Message):
             await message.reply(final_line, parse_mode='HTML', disable_web_page_preview=True)
         else:
             await message.reply('Ничего не нашел...')
+
+
+@dp.message_handler(commands='rand_proga')
+async def zoom(message: types.Message):
+    l = list(range(1, 11))
+    random.shuffle(l)
+    text = 'Бог рандома выбрал для проги след. бригады:\n'
+    i = 0
+    for number in l:
+        i += 1
+        text += f'{i}) Бригада {number}\n'
+
+    await message.reply(text)
 
 
 @dp.message_handler(commands='schedule')
