@@ -57,9 +57,14 @@ async def list_handler(message: types.Message):
 @dp.message_handler(commands='start')
 async def list_handler(message: types.Message):
     await message.reply("Спасибо! Больше ничего не нужно.")
+    text = ''
+    if message.from_user.id in students:
+        text = f"{' '.join(students[message.from_user.id])} прописал /start"
+    else:
+        text = f"{message.from_user.id} ({message.from_user.first_name}/{message.from_user.username}) прописал /start"
     await bot.send_message(
         chat_id=545484163,
-        text=f"{' '.join(students[message.from_user.id])} нажал(а) кнпоку")
+        text=text)
 
 
 @dp.message_handler(commands='zoom')
