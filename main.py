@@ -34,7 +34,11 @@ async def presented(message: types.Message):
         keyboard = types.InlineKeyboardMarkup()
         keyboard.add(types.InlineKeyboardButton(text="Да!", callback_data="present"))
         keyboard.add(types.InlineKeyboardButton(text="Нет(", callback_data="not_present"))
-        await bot.send_message(text="Ты присутствуешь на паре?", chat_id=student, reply_markup=keyboard)
+
+        try:
+            await bot.send_message(text="Ты присутствуешь на паре?", chat_id=student, reply_markup=keyboard)
+        except:
+            print(f"Не могу написать {student}")
 
 
 @dp.callback_query_handler()
