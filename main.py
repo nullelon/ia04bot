@@ -13,6 +13,54 @@ config.read("settings.ini")
 bot = Bot(token=config['Bot']['token'], parse_mode=types.ParseMode.HTML)
 dp = Dispatcher(bot)
 
+with open("students.txt", "r") as f:
+    lines = f.read().splitlines()
+students = dict()
+
+for line in lines:
+    fields = line.split()
+    if len(fields) == 3 and fields[0].isnumeric():
+        students[int(fields[0])] = fields[1:]
+
+last_presented = list()
+
+
+@dp.message_handler(commands='presented')
+async def presented(message: types.Message):
+    if message.from_user.id != int(config["Bot"]["admin_id"]):
+        return
+    last_presented.clear()
+    for student in students:
+        keyboard = types.InlineKeyboardMarkup()
+        keyboard.add(types.InlineKeyboardButton(text="Да!", callback_data="present"))
+        keyboard.add(types.InlineKeyboardButton(text="Нет(", callback_data="not_present"))
+        await bot.send_message(text="Ты присутствуешь на паре?", chat_id=student, reply_markup=keyboard)
+
+
+@dp.callback_query_handler()
+async def callback_present(callback_query: types.CallbackQuery):
+    if callback_query.data == "present":
+        last_presented.append(callback_query.from_user.id)
+        await callback_query.message.edit_text("Молодец!")
+    elif callback_query.data == "not_present":
+        await callback_query.message.edit_text("Ну, как хочешь...")
+
+
+@dp.message_handler(commands='list')
+async def list_handler(message: types.Message):
+    text = 'Присутствующие:\n\n'
+    for p in last_presented:
+        text += f'{" ".join(students[p])}\n'
+    await message.reply(text)
+
+
+@dp.message_handler(commands='start')
+async def list_handler(message: types.Message):
+    await message.reply("Спасибо! Больше ничего не нужно.")
+    await bot.send_message(
+        chat_id=545484163,
+        text=f"{' '.join(students[message.from_user.id])} нажал(а) кнпоку")
+
 
 @dp.message_handler(commands='zoom')
 async def zoom(message: types.Message):
