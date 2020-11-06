@@ -1,5 +1,6 @@
 import re
 import random
+import pytz
 
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher, filters
@@ -119,7 +120,7 @@ async def schedule(message: types.Message):
 
 
 def schedule_text():
-    time = datetime.now()
+    time = datetime.now(tz=pytz.timezone("Europe/Kiev"))
     seconds = time.hour * 60 * 60 + time.minute * 60
     text = f'1 пара  08-30 - 10-05{" &lt=" if 30600 <= seconds <= 37500 else ""}\n' \
            f'2 пара  10-25 - 12-00{" &lt=" if 37500 <= seconds <= 44400 else ""}\n' \
