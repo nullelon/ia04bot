@@ -100,9 +100,12 @@ async def zoom(message: types.Message):
 @dp.message_handler(commands='rand')
 async def random_list(message: types.Message):
     fields = message.text.split()
-    text = 'Бог рандома выбрал следующие бригады:\n'
+    additional_text = ""
+    if (len(fields) > 2):
+        additional_text = " ({})".format(" ".join(fields[2:])) #everything that comes after /rand N 
+    text = 'Бог рандома выбрал следующие бригады{}:\n'.format(additional_text)
     if fields[1].isnumeric() and 0 < int(fields[1]) < 32:
-        l = list(range(1, int(fields[1])))
+        l = list(range(1, int(fields[1])+1))
         random.shuffle(l)
         i = 0
         for number in l:
