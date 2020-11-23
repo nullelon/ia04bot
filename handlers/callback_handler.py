@@ -16,8 +16,8 @@ async def callback_present(callback_query: types.CallbackQuery):
                 await callback_query.message.edit_text("Молодец!")
             else:
                 await callback_query.message.edit_text("Ну, как хочешь...")
-    elif callback_fields[0] == "task":
-        await task_callback(callback_fields, callback_query)
-    elif callback_fields[0] == "tasks":
-        await tasks_callback(callback_fields, callback_query)
+    # elif callback_fields[0] == "task":
+    #     await task_callback(callback_fields, callback_query)
+    # elif callback_fields[0] == "tasks":
+    #     await tasks_callback(callback_fields, callback_query)
     await callback_query.answer()
