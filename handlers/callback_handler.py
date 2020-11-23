@@ -2,7 +2,7 @@ from aiogram import types
 
 from misc import dp
 from handlers.presented_students_handler import set_user_present
-from handlers.tasks_handler import task_callback, tasks_callback
+# from handlers.tasks_handler import task_callback
 
 
 @dp.callback_query_handler()
