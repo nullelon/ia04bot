@@ -5,6 +5,7 @@ from datetime import datetime
 import pytz
 from aiogram import types
 from misc import dp, bot
+from students import students
 
 
 @dp.message_handler(commands='zoom')
@@ -45,6 +46,18 @@ async def random_list(message: types.Message):
     else:
         text = "ты дибил да"
 
+    await message.reply(text)
+
+
+@dp.message_handler(commands='rands')
+async def random_list(message: types.Message):
+    text = 'Бог рандома выбрал следующих жертв:\n'
+    keys = list(students.keys())
+    random.shuffle(keys)
+    i = 0
+    for key in keys:
+        i += 1
+        text += f'{i}) {" ".join(students[key])}\n'
     await message.reply(text)
 
 
