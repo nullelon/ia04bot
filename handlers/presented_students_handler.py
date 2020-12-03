@@ -1,34 +1,61 @@
+import re
 from aiogram import types
-
 from misc import dp, config, bot
 from students import students
 
-last_presented = list()
+users_answers = dict()
+options = list()
+answer_texts = list()
+
+# /poll (Ты хочешь записать в очередь на ОС?) [Да;Нет] {Окей, я записал тебя!; Понял, спасибо за ответ!}
+r = re.compile(r"^/poll \((.+)\) \[(.+)] \{(.+)}$")
 
 
-@dp.message_handler(commands='presented')
+@dp.message_handler(commands='poll')
 async def presented(message: types.Message):
     if message.from_user.id != int(config["Bot"]["admin_id"]):
         return
-    last_presented.clear()
-    for student in students:
-        keyboard = types.InlineKeyboardMarkup()
-        keyboard.add(types.InlineKeyboardButton(text="Да!", callback_data="present_yes"))
-        keyboard.add(types.InlineKeyboardButton(text="Нет(", callback_data="present_no"))
-        try:
-            await bot.send_message(text="Ты присутствуешь на паре?", chat_id=student, reply_markup=keyboard)
-        except:
-            print(f"Не могу написать {student}")
+    options.clear()
+    users_answers.clear()
+    answer_texts.clear()
+
+    regex = r.match(message.text)
+
+    if regex is not None:
+        global question
+        question = regex.group(1)
+        for option in regex.group(2).split(";"):
+            options.append(option.strip())
+        for answer in regex.group(3).split(";"):
+            answer_texts.append(answer.strip())
+
+        if len(answer_texts) != len(options):
+            await message.reply("Кол-во аргуметов в [] и {} должно быть одинаковое!")
+            return
+
+        for student in students:
+            keyboard = types.InlineKeyboardMarkup()
+            for option in options:
+                keyboard.add(types.InlineKeyboardButton(text=option, callback_data=f"poll_{options.index(option)}"))
+            try:
+                await bot.send_message(text=question, chat_id=student, reply_markup=keyboard)
+            except:
+                print(f"Не могу написать {student}")
+    else:
+        await message.reply("Шаблон: /poll (Вопрос) "
+                            "[o1;o2] {a1;a2}\n\non - вариант ответа\nan - ответ бота на выбор on варианта")
 
 
 @dp.message_handler(commands='list')
 async def list_handler(message: types.Message):
-    text = 'Присутствующие:\n\n'
-    for p in last_presented:
-        text += f'{" ".join(students[p])}\n'
+    text = f'Ответы на опрос "{question}":\n\n'
+    for answered_id in users_answers:
+        student = ' '.join(students[answered_id])
+        text += f'{student} - {options[int(users_answers[answered_id])]}\n'
     await message.reply(text)
 
 
-def set_user_present(user_id, is_present):
-    if is_present:
-        last_presented.append(user_id)
+async def poll_handle(callback_query: types.CallbackQuery):
+    answer = callback_query.data.split("_")[1]
+    users_answers[callback_query.from_user.id] = answer
+    await callback_query.message.edit_text(answer_texts[int(answer)])
