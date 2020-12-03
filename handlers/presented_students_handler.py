@@ -6,6 +6,7 @@ from students import students
 users_answers = dict()
 options = list()
 answer_texts = list()
+question = ''
 
 # /poll (Ты хочешь записать в очередь на ОС?) [Да;Нет] {Окей, я записал тебя!; Понял, спасибо за ответ!}
 r = re.compile(r"^/poll \((.+)\) \[(.+)] \{(.+)}$")
@@ -48,10 +49,22 @@ async def presented(message: types.Message):
 
 @dp.message_handler(commands='list')
 async def list_handler(message: types.Message):
-    text = f'Ответы на опрос "{question}":\n\n'
+    if question == '':
+        await message.reply("Вопрос еще не задавали!")
+        return
+    fields = message.text.split()
+    filter = ''
+    filter_text = ''
+    if len(fields) > 1:
+        filter = ' '.join(fields[1:])
+        filter_text = f'с фильтром "{filter}"'
+
+    text = f'Ответы на опрос "{question}" {filter_text}:\n\n'
     for answered_id in users_answers:
         student = ' '.join(students[answered_id])
-        text += f'{student} - {options[int(users_answers[answered_id])]}\n'
+        answer_of_student = options[int(users_answers[answered_id])]
+        if filter in answer_of_student:
+            text += f'{student} - {answer_of_student}\n'
     await message.reply(text)
 
 
