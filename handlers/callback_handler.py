@@ -1,7 +1,7 @@
 from aiogram import types
 
 from misc import dp
-from handlers.presented_students_handler import poll_handle
+from handlers.poll_handler import poll_handle
 # from handlers.tasks_handler import task_callback, tasks_callback
 
 

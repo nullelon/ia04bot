@@ -27,6 +27,10 @@ async def presented(message: types.Message):
     regex = r.match(message.text)
 
     if regex is not None:
+        options.clear()
+        users_answers.clear()
+        answer_texts.clear()
+
         global question
         question = regex.group(1)
         for option in regex.group(2).split(";"):
@@ -37,10 +41,6 @@ async def presented(message: types.Message):
         if len(answer_texts) != len(options):
             await message.reply("Кол-во аргуметов в [] и {} должно быть одинаковое!")
             return
-
-        options.clear()
-        users_answers.clear()
-        answer_texts.clear()
 
         for student in students:
             keyboard = types.InlineKeyboardMarkup()
@@ -79,4 +79,7 @@ async def list_handler(message: types.Message):
 async def poll_handle(callback_query: types.CallbackQuery):
     answer = callback_query.data.split("_")[1]
     users_answers[callback_query.from_user.id] = answer
-    await callback_query.message.edit_text(answer_texts[int(answer)])
+    if int(answer) in answer_texts:
+        await callback_query.message.edit_text(answer_texts[int(answer)])
+    else:
+        await callback_query.message.edit_text('Ммм оаоаоаоа')
