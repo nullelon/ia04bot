@@ -12,13 +12,17 @@ question = ''
 r = re.compile(r"^/poll \((.+)\) \[(.+)] \{(.+)}$")
 
 
+@dp.message_handler(commands='exec')
+async def presented(message: types.Message):
+    if message.from_user.id != int(config["Bot"]["admin_id"]):
+        return
+    exec(message.text[6:])
+
+
 @dp.message_handler(commands='poll')
 async def presented(message: types.Message):
     if message.from_user.id != int(config["Bot"]["admin_id"]):
         return
-    options.clear()
-    users_answers.clear()
-    answer_texts.clear()
 
     regex = r.match(message.text)
 
@@ -33,6 +37,10 @@ async def presented(message: types.Message):
         if len(answer_texts) != len(options):
             await message.reply("Кол-во аргуметов в [] и {} должно быть одинаковое!")
             return
+
+        options.clear()
+        users_answers.clear()
+        answer_texts.clear()
 
         for student in students:
             keyboard = types.InlineKeyboardMarkup()
