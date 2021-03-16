@@ -7,12 +7,20 @@ from misc import dp
 @dp.message_handler(filters.Regexp(regexp="Женя!"))
 @dp.message_handler(filters.Regexp(regexp="Староста!"))
 async def headman_handler(message: types.Message):
-    await message.reply("@nullelon іди сюди, кошаче 😻")
+    text = "@nullelon іди сюди, кошаче 😻"
+    if message.reply_to_message is not None:
+        await message.bot.send_message(message.chat.id, text, reply_to_message_id=message.reply_to_message.message_id)
+    else:
+        await message.reply(text)
 
 
 @dp.message_handler(filters.Regexp(regexp="Ася!"))
 async def asya_handler(message: types.Message):
-    await message.reply("@agent_sever іди сюди, наша ти киця олюблена!!! 😻😻😻")
+    text = "@agent_sever іди сюди, наша ти киця олюблена!!! 😻😻😻"
+    if message.reply_to_message is not None:
+        await message.bot.send_message(message.chat.id, text, reply_to_message_id=message.reply_to_message.message_id)
+    else:
+        await message.reply(text)
 
 
 @dp.message_handler(filters.Regexp(regexp="электричк"))
