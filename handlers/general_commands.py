@@ -1,5 +1,6 @@
 import random
 import re
+import requests
 from datetime import datetime
 
 import pytz
@@ -12,22 +13,45 @@ from students import students
 async def zoom(message: types.Message):
     fields = message.text.split()
     if len(fields) == 1:
-        await message.reply("Чей именно зум нужно найти?")
+        sn = get_current_pair_teacher_surname()
+        if(sn):
+            fields.append(sn[:3])
+        
+    msg = await bot.forward_message(545484163, from_chat_id=-1001409457067, message_id=11)
+
+    text = re.sub(r'\n+</a>', '</a>\n', msg.html_text)
+    final_line = ''
+    for line in text.splitlines():
+        if fields[1].lower() in line.lower():
+            final_line = line
+
+    await msg.delete()
+    if final_line != '':
+        await message.reply(final_line, parse_mode='HTML', disable_web_page_preview=True)
     else:
-        msg = await bot.forward_message(545484163, from_chat_id=-1001409457067, message_id=11)
+        await message.reply('Ничего не нашел...')
+            
 
-        text = re.sub(r'\n+</a>', '</a>\n', msg.html_text)
-        final_line = ''
-        for line in text.splitlines():
-            if fields[1].lower() in line.lower():
-                final_line = line
+def get_current_pair_teacher_surname():
+    r = requests.get("http://rozklad.kpi.ua/Schedules/ViewSchedule.aspx?g=96860c67-2892-4fe3-8a2f-b15dc3adc159")
+    str = r.text
+    try:
+        a = re.search("current_pair", str)
+        if(not a):
+            a = re.search("closest_pair", str)
+        ind = a.start()
 
-        await msg.delete()
-        if final_line != '':
-            await message.reply(final_line, parse_mode='HTML', disable_web_page_preview=True)
-        else:
-            await message.reply('Ничего не нашел...')
+        str = str[ind:]
+        second_title_tag_index = str.index("title", str.index("title") + 5)
 
+        #this index does not represent the index in the actual str
+        full_name_beginning_index = str[second_title_tag_index:].index(">")
+
+        surname = str[second_title_tag_index:][full_name_beginning_index:].split()[1]
+    except:
+        surname = None
+    return surname
+      
 
 @dp.message_handler(commands='rand')
 async def random_list(message: types.Message):
